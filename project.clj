@@ -6,4 +6,4 @@
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [cheshire "5.10.0"]]
   :repl-options {:init-ns ft-turing.core}
-  :main ft-turing.json-parser)
+  :main ft-turing.core)

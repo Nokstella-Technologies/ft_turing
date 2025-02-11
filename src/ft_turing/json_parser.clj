@@ -4,8 +4,12 @@
 
 (defn load-json
   [filename]
-  (with-open [rdr (io/reader filename)]
-    (json/parse-stream rdr true)))
+  (try
+    (with-open [rdr (io/reader filename)]
+      (json/parse-stream rdr true))
+    (catch Exception e
+      (println "Error: Could not read the JSON file.")
+      (System/exit 1))))
 
 (defn parse-turing-machine [json]
   {:name        (get json :name)
@@ -25,10 +29,3 @@
        (string? (:initial machine))
        (vector? (:finals machine))
        (map? (:transitions machine))))
-
-(defn -main []
-  (let [json (load-json "resources/json.json")
-        machine (parse-turing-machine json)]
-    (if (validate-machine machine)
-      (println "Máquina de Turing válida!" machine)
-      (println "Erro na estrutura do JSON."))))
