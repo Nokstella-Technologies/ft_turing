@@ -33,12 +33,16 @@
 (s/defn validate-config-file-and-input :- models.machine/Machine
   [args :- [s/Str]]
   (let [json    (json-parser/load-json (first args))
-        machine (json-parser/parse-turing-machine json)]
+        machine (json-parser/parse-turing-machine json)
+        fails   (json-parser/validate-machine machine)]
+    (when fails
+      (println "Error: JSON parser fails.") (println fails) (show-help) (System/exit 1))
     machine))
 
+;; TODO validar o input de entrada precisa ter somente caracteres do alphabet
 (s/defn validate-input  :- models.machine/Machine
   [machine :- models.machine/Machine
-   str :- s/Str]
+   fita :- s/Str]
   machine)
 
 (s/defn validate-args :- models.machine/Machine

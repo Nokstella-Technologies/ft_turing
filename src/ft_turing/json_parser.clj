@@ -23,11 +23,7 @@
    :finals      (get json :finals)
    :transitions (get json :transitions)})
 
-(defn validate-machine [machine]
-  (and (string? (:name machine))
-       (vector? (:alphabet machine))
-       (string? (:blank machine))
-       (vector? (:states machine))
-       (string? (:initial machine))
-       (vector? (:finals machine))
-       (map? (:transitions machine))))
+(s/defn validate-machine
+  [machine]
+  (let [fails (s/check models.machine/Machine machine)]
+    fails))
