@@ -38,6 +38,4 @@
 (defn -main [& args]
   (println args)
   (let [machine (validation-args/validate-args args)]
-    (if (json-parser/validate-machine machine)
-      (println "Máquina de Turing válida!" machine)
-      (println "Erro na estrutura do JSON."))))
+      (println "Máquina de Turing válida!" machine)))

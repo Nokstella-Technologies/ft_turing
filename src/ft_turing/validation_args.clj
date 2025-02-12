@@ -1,5 +1,7 @@
 (ns ft-turing.validation-args
-  (:require [ft-turing.json-parser :as json-parser]))
+  (:require [ft-turing.json-parser :as json-parser]
+            [ft-turing.models.machine :as models.machine]
+            [schema.core :as s]))
 
 
 (defn show-help []
@@ -12,26 +14,39 @@
 
 
 (defn validate-help [args]
-    [(contains? #{"--help" "-h"} (first args)) (fn [] (show-help) (System/exit 0))])
+  (when (contains? #{"--help" "-h"} (first args))
+      (show-help) (System/exit 0))
+  args)
 
 (defn validate-arg-numbers [args]
-    [(not= 2 (count args)) (fn [] (println "Error: Expected exactly 2 arguments, the jsonfile and input.")
-             (show-help)
-             (System/exit 1))])
+  (when (not= 2 (count args))
+    (println "Error: Expected exactly 2 arguments, the jsonfile and input.")
+     (show-help)
+     (System/exit 1))
+    args)
 
-(defn validate-file-exists [json-file]
-    [(not (.exists (clojure.java.io/file json-file))) (fn [] (println "Error: JSON file does not exist.") (System/exit 1))])
+(defn validate-file-exists [args]
+  (when (not (.exists (clojure.java.io/file (first args))))
+    (println "Error: JSON file does not exist.") (show-help) (System/exit 1))
+  args)
 
-
-
-(defn validate-input [args machine]
-  true)
-
-
-(defn validate-config-file-and-input [args]
+(s/defn validate-config-file-and-input :- models.machine/Machine
+  [args :- [s/Str]]
   (let [json    (json-parser/load-json (first args))
         machine (json-parser/parse-turing-machine json)]
-  [(validate-input args machine) (fn [] machine)]))
+    machine))
 
-(defn validate-args [args]
-  )
+(s/defn validate-input  :- models.machine/Machine
+  [machine :- models.machine/Machine
+   str :- s/Str]
+  machine)
+
+(s/defn validate-args :- models.machine/Machine
+  [args]
+  (-> args
+      (validate-help)
+      (validate-arg-numbers)
+      (validate-file-exists)
+      (validate-config-file-and-input)
+      (validate-input  (second args))
+      ))

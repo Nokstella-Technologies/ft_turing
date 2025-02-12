@@ -1,6 +1,8 @@
 (ns ft-turing.json-parser
   (:require [cheshire.core :as json]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [ft-turing.models.machine :as models.machine]
+            [schema.core :as s]))
 
 (defn load-json
   [filename]
@@ -11,7 +13,8 @@
       (println "Error: Could not read the JSON file.")
       (System/exit 1))))
 
-(defn parse-turing-machine [json]
+(s/defn parse-turing-machine :- models.machine/Machine
+  [json]
   {:name        (get json :name)
    :alphabet    (get json :alphabet)
    :blank       (get json :blank)
@@ -21,7 +24,6 @@
    :transitions (get json :transitions)})
 
 (defn validate-machine [machine]
-  (println "parseado validacao  " machine)
   (and (string? (:name machine))
        (vector? (:alphabet machine))
        (string? (:blank machine))
