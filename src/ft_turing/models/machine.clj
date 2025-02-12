@@ -13,6 +13,22 @@
 (s/defn ValidAlphabet [s]
   (and (s/constrained s not-empty) (s/constrained s single-char? )))
 
+(defn initial-in-states? [{:keys [initial states]}]
+  (some #(= initial %) states))
+
+(defn finals-subset-of-states? [{:keys [finals states]}]
+  (every? #(some #{%} states) finals))
+
+
+(defn blank-in-alphabet? [{:keys [blank alphabet]}]
+  (and (not (nil? blank))
+       (some #(= blank %) alphabet)))
+
+(defn valid-machine? [machine]
+  (and (blank-in-alphabet? machine)
+       (initial-in-states? machine)
+       (finals-subset-of-states? machine)))
+
 (s/def TransitionSchema
   {:read s/Str
    :to_state  s/Str
@@ -23,10 +39,12 @@
   {s/Keyword  (s/constrained [TransitionSchema] not-empty)})
 
 (s/defschema Machine
+  (s/constrained
   {:name s/Str
    :alphabet  (ValidAlphabet [s/Str])
    :blank   (s/constrained  s/Str single-char-string?)
    :states  (NonEmptySet [s/Str])
    :initial  s/Str
    :finals  (NonEmptySet [s/Str])
-   :transitions  (NonEmptySet StateTransitionsSchema)})
+   :transitions  (NonEmptySet StateTransitionsSchema)}
+  valid-machine? "machine is bad write"))
