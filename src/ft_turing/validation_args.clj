@@ -36,14 +36,43 @@
         machine (json-parser/parse-turing-machine json)
         fails   (json-parser/validate-machine machine)]
     (when fails
-      (println "Error: JSON parser fails.") (println fails) (show-help) (System/exit 1))
+      (println "Parser Json Error: JSON parser fails.", fails) (System/exit 1))
     machine))
 
-;; TODO validar o input de entrada precisa ter somente caracteres do alphabet
 (s/defn validate-input  :- models.machine/Machine
   [machine :- models.machine/Machine
    fita :- s/Str]
-  machine)
+  (let [alphabet (set (:alphabet machine))
+        invalid-chars (filter #(not (contains? alphabet (str %))) fita)]
+    (when (not (empty? invalid-chars))
+      (println "Parser Json Error: Chars invalids in the input") (println invalid-chars) (System/exit 1))
+      machine))
+
+(s/defn validate-transitions-was-all-keys-needed :- models.machine/Machine
+  [machine :- models.machine/Machine]
+  (let [action-state (remove (set (:finals machine)) (:states machine))]
+    (when (not (every?
+                 (fn [x] (contains? (:transitions machine) (keyword x)))
+                 action-state))
+      (println "Parser Json Error: one of the states that is not finals is without any action") (println action-state) (System/exit 1)))
+    machine)
+
+
+(s/defn validate-transitions-was-final-action :- models.machine/Machine
+  [machine :- models.machine/Machine]
+  (let [{:keys [ finals transitions]} machine
+        finals-set (set finals)]
+    (if (some #(some (comp finals-set :to_state) (val %)) transitions)
+              machine
+      ((println "Parser Json Error: one of the transitions need to has a final action") (System/exit 1)))))
+
+(s/defn validate-transitions-was-action-just-states :- models.machine/Machine
+  [machine :- models.machine/Machine]
+  (let [{:keys [ states transitions]} machine
+        states-set (set states)]
+    (if (every? #(every? (comp states-set :to_state) (val %)) transitions)
+      machine
+      ((println "Parser Json Error: all transitions action need to be an state") (System/exit 1)))))
 
 (s/defn validate-args :- models.machine/Machine
   [args]
@@ -52,5 +81,7 @@
       (validate-arg-numbers)
       (validate-file-exists)
       (validate-config-file-and-input)
-      (validate-input  (second args))
-      ))
+      (validate-transitions-was-all-keys-needed)
+      (validate-transitions-was-final-action)
+      (validate-transitions-was-action-just-states)
+      (validate-input (second args))))
