@@ -1,6 +1,6 @@
 (ns ft-turing.validation-args
   (:require [ft-turing.json-parser :as json-parser]
-            [ft-turing.models.machine :as models.machine]
+            [ft-turing.models.machine-model :as models.machine]
             [schema.core :as s]))
 
 

@@ -1,7 +1,7 @@
 (ns ft-turing.json-parser
   (:require [cheshire.core :as json]
             [clojure.java.io :as io]
-            [ft-turing.models.machine :as models.machine]
+            [ft-turing.models.machine-model :as models.machine]
             [schema.core :as s]))
 
 (defn load-json

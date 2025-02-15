@@ -29,4 +29,6 @@
 (defn -main [& args]
   (-> (validation-args/validate-args args)
       (print-machine)
-      (service-machine/machine-controller (second args))))
+      (service-machine/machine-controller (second args))
+      (println)))
+

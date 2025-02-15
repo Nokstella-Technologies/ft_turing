@@ -1,4 +1,4 @@
-(ns ft-turing.models.machine
+(ns ft-turing.models.machine-model
   (:require [schema.core :as s]))
 
 (s/defn NonEmptySet [s]
