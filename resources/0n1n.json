@@ -1,0 +1,61 @@
+{
+  "name": "palindrome_checker",
+  "alphabet": ["1", "0", ".", "y", "n", "z", "u"],
+  "blank": ".",
+  "states": [
+    "scan_right",
+    "scan_right_1",
+    "valid_1",
+    "return",
+    "valid_0",
+    "scan_right_0",
+    "write_yes",
+    "write_no",
+    "END",
+    "HALT"
+  ],
+  "initial": "scan_right",
+  "finals": ["HALT"],
+  "transitions": {
+    "scan_right": [
+      { "read": ".", "to_state": "scan_right", "write": ".", "action": "RIGHT" },
+      { "read": "1", "to_state": "write_no", "write": "1", "action": "RIGHT" },
+      { "read": "0", "to_state": "scan_right_0", "write": "z", "action": "RIGHT" }
+    ],
+    "scan_right_1": [
+      { "read": "1", "to_state": "scan_right_1", "write": "1", "action": "RIGHT" },
+      { "read": "0", "to_state": "scan_right_1", "write": "0", "action": "RIGHT" },
+      { "read": ".", "to_state": "valid_1", "write": ".", "action": "LEFT" }
+    ],
+    "valid_1": [
+      { "read": "1", "to_state": "return", "write": ".", "action": "LEFT" },
+      { "read": "0", "to_state": "write_no", "write": "0", "action": "RIGHT" }
+    ],
+    "return": [
+      { "read": "1", "to_state": "return", "write": ".", "action": "LEFT" },
+      { "read": "0", "to_state": "return", "write": ".", "action": "LEFT" },
+      { "read": ".", "to_state": "scan_right", "write": ".", "action": "RIGHT" }
+    ],
+    "scan_right_0": [
+      { "read": "1", "to_state": "scan_right_0", "write": "1", "action": "RIGHT" },
+      { "read": "0", "to_state": "scan_right_0", "write": "0", "action": "RIGHT" },
+      { "read": ".", "to_state": "valid_0", "write": ".", "action": "LEFT" }
+    ],
+    "valid_0" : [
+      { "read": "1", "to_state": "write_no", "write": "1", "action": "RIGHT" },
+      { "read": "0", "to_state": "return", "write": ".", "action": "LEFT" }
+    ],
+
+    "write_yes": [
+      { "read": ".", "to_state": "END", "write": "y", "action": "RIGHT" },
+      { "read": "1", "to_state": "scan_right_0", "write": "1", "action": "RIGHT" },
+      { "read": "0", "to_state": "scan_right_0", "write": "0", "action": "RIGHT" }
+    ],
+    "write_no": [
+      { "read": ".", "to_state": "END", "write": "n", "action": "RIGHT" }
+    ],
+    "END": [
+      { "read": ".", "to_state": "HALT", "write": ".", "action": "RIGHT" }
+    ]
+  }
+}

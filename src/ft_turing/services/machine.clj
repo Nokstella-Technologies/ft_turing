@@ -30,6 +30,8 @@
     (printf "[%s] (%s) -> (%s)\n" formatted-tape, state-info, state-action-str))
   tape-real)
 
+
+; TODO validar tamanho do  head para nao dar underflow e overflow
 (s/defn get-new-state
   [state-str tape head transitions]
   (get (get transitions (keyword state-str))  (keyword (str (nth tape head)))))
