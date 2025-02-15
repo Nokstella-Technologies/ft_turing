@@ -10,7 +10,7 @@
     (with-open [rdr (io/reader filename)]
       (json/parse-stream rdr true))
     (catch Exception e
-      (println "Error: Could not read the JSON file.")
+      (println "Error: Could not read the JSON file.", e)
       (System/exit 1))))
 
 (s/defn parse-turing-machine :- models.machine/Machine
