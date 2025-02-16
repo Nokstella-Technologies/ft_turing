@@ -4,7 +4,7 @@
 
 (defn print-machine [machine]
   (let [{:keys [name alphabet states initial finals transitions]} machine
-        separator (apply str (repeat 80 "*")) ;; Cria a linha de separação
+        separator (apply str (repeat 80 "*"))
         print-header (fn []
                        (println separator)
                        (println (format "* %-76s *" " "))

@@ -3,22 +3,6 @@
             [ft-turing.models.tape :as models.tape]
             [schema.core :as s]))
 
-(defn validate-infinite-loop [actions]
-   (let [last-10 (take-last 10 actions) ;; Pega os últimos 10 elementos
-         temp-array (reduce (fn [acc action]
-                              (if (or (empty? acc) ;; Adiciona se acc estiver vazio
-                                      (not= (first acc) action)) ;; Ou se o primeiro não for igual ao atual
-                                (conj acc action)
-                                (reduced acc))) ;; Para quando encontrar repetição
-                            []
-                            last-10)
-         pattern-size (count temp-array)] ;; Tamanho do padrão identificado
-     (if (and (> pattern-size 1) ;; O padrão deve ter pelo menos 2 elementos
-              (= (take-last (* 2 pattern-size) last-10) ;; Pega os últimos 2 padrões
-                 (concat temp-array temp-array))) ;; Compara com o padrão duplicado
-       true
-       false)))
-
   (defn make-action
   [action head]
   (if (= action "LEFT")
@@ -38,11 +22,11 @@
   [{:keys [tape head state-str state] :as tape-real}]
   (let [tape-str (apply str tape)
         formatted-tape (str
-                         (subs tape-str 0 head)    ;; Parte da fita antes do cabeçote
-                         "<"                      ;; Indica a posição do cabeçote
-                         (nth tape head)      ;; Símbolo sob o cabeçote
-                         ">"                      ;; Indica o fim do cabeçote
-                         (subs tape-str (inc head))) ;; Parte da fita após o cabeçote
+                         (subs tape-str 0 head)
+                         "<"
+                         (nth tape head)
+                         ">"
+                         (subs tape-str (inc head)))
         state-info (str state-str ", " (nth tape head) )
         state-action-str (str (:to_state state) ", " (:write state) ", " (:action state))]
     (println (format "[%s] (%s) -> (%s)" formatted-tape, state-info, state-action-str)))
