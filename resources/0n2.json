@@ -1,14 +1,11 @@
 {
   "name": "palindrome_checker",
-  "alphabet": ["1", "0", ".", "y", "n", "z", "u"],
+  "alphabet": ["0", ".", "y", "n"],
   "blank": ".",
   "states": [
     "validate_init",
-    "find_1",
-    "find_z",
     "find_0",
-    "validate_end",
-    "write_no",
+    "find_next_0",
     "END",
     "HALT"
   ],
@@ -17,37 +14,15 @@
   "transitions": {
     "validate_init": [
       { "read": ".", "to_state": "validate_init", "write": ".", "action": "RIGHT" },
-      { "read": "1", "to_state": "write_no", "write": "1", "action": "RIGHT" },
-      { "read": "0", "to_state": "find_1", "write": "z", "action": "RIGHT" }
-    ],
-    "find_1": [
-      { "read": "1", "to_state": "find_z", "write": "u", "action": "LEFT" },
-      { "read": "0", "to_state": "find_1", "write": "0", "action": "RIGHT" },
-      { "read": "u", "to_state": "find_1", "write": "u", "action": "RIGHT" },
-      { "read": ".", "to_state": "END", "write": "n", "action": "RIGHT" }
-    ],
-    "find_z": [
-      { "read": "1", "to_state": "find_z", "write": "1", "action": "LEFT" },
-      { "read": "0", "to_state": "find_z", "write": "0", "action": "LEFT" },
-      { "read": "u", "to_state": "find_z", "write": "u", "action": "LEFT" },
-      { "read": "z", "to_state": "find_0", "write": "z", "action": "RIGHT"}
+      { "read": "0", "to_state": "find_0", "write": "0", "action": "RIGHT" }
     ],
     "find_0": [
-      { "read": "0", "to_state": "find_1", "write": "z", "action": "RIGHT" },
-      { "read": "u", "to_state": "validate_end", "write": "u", "action": "RIGHT" }
-    ],
-    "validate_end": [
-      { "read": "1", "to_state": "write_no", "write": "u", "action": "RIGHT" },
-      { "read": "0", "to_state": "write_no", "write": "0", "action": "RIGHT" },
-      { "read": "u", "to_state": "validate_end", "write": "u", "action": "RIGHT" },
-      { "read": ".", "to_state": "END", "write": "y", "action": "RIGHT" }
-    ],
-    "write_no": [
-      { "read": "1", "to_state": "write_no", "write": "1", "action": "RIGHT" },
-      { "read": "0", "to_state": "write_no", "write": "0", "action": "RIGHT" },
-      { "read": "u", "to_state": "write_no", "write": "u", "action": "RIGHT" },
-      { "read": "z", "to_state": "write_no", "write": "z", "action": "RIGHT" },
+      { "read": "0", "to_state": "find_next_0", "write": "0", "action": "RIGHT" },
       { "read": ".", "to_state": "END", "write": "n", "action": "RIGHT" }
+    ],
+    "find_next_0": [
+      { "read": "0", "to_state": "find_0", "write": "0", "action": "RIGHT" },
+      { "read": ".", "to_state": "END", "write": "y", "action": "RIGHT" }
     ],
     "END": [
       { "read": ".", "to_state": "HALT", "write": ".", "action": "RIGHT" }

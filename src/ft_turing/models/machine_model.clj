@@ -20,14 +20,30 @@
   (every? #(some #{%} states) finals))
 
 
-(defn blank-in-alphabet? [{:keys [blank alphabet]}]
-  (and (not (nil? blank))
-       (some #(= blank %) alphabet)))
+(defn in-alphabet?
+  [alphabet chr]
+  (and (not (nil? chr))
+       (some #(= chr %) alphabet)))
+
+(defn print_error [bool str]
+  (when (not bool)
+    (println str))
+  bool)
+
+(defn validate-transitions-field-by-vec? [{:keys [transitions]} vector-to-verify field]
+  (every? (fn [[_ state-transitions]]
+            (every? (fn [transition]
+                      (print_error (in-alphabet? vector-to-verify (field transition)) transition))
+                    state-transitions))
+          transitions))
 
 (defn valid-machine? [machine]
-  (and (blank-in-alphabet? machine)
-       (initial-in-states? machine)
-       (finals-subset-of-states? machine)))
+  (and (print_error (in-alphabet? (:alphabet machine) (:blank machine)) "Error: blank is not in alphabet")
+       (print_error (initial-in-states? machine) "Error: initial state is not in state" )
+       (print_error (validate-transitions-field-by-vec? machine (:alphabet machine) :write) "Error: transition was some :write field with not valid alphabet")
+       (print_error (validate-transitions-field-by-vec? machine (:alphabet machine) :read) "Error: transition was some :read field with not valid alphabet")
+       (print_error (validate-transitions-field-by-vec? machine (:states machine) :to_state) "Error: transition was some :to_state field with not valid alphabet")
+       (print_error (finals-subset-of-states? machine) "Error: finals not a subset of state")))
 
 (s/def TransitionSchema
   {:read s/Str
@@ -47,4 +63,4 @@
    :initial  s/Str
    :finals  (NonEmptySet [s/Str])
    :transitions  (NonEmptySet StateTransitionsSchema)}
-  valid-machine? "machine is bad write, valid one of this conditions: blank alphabet, initial state in state, finals is a subset of state"))
+  valid-machine? "machine is bad write, valid one of this conditions"))

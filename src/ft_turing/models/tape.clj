@@ -15,12 +15,13 @@
    :state models.machine/TransitionSchema
    :transitions StateTransitionTape
    :finals [s/Str]
-   :halted s/Str})
+   :halted s/Str
+   })
 
 (s/defn init-Tape :- Tape
   [machine :- models.machine/Machine
    input :- s/Str]
-  {:tape (vec (str input (apply str (repeat 10 (:blank machine)))))
+  {:tape (vec (str input (apply str (repeat 30 (:blank machine)))))
    :head 0
    :state-str (:initial machine)
    :state (first (filter #(= (:read %) (str (nth input 0))) (get (:transitions machine) (keyword (:initial machine)))))
@@ -32,4 +33,5 @@
                                                transitions))]))
                       (:transitions machine))
    :finals (:finals machine)
-   :halted nil})
+   :halted nil
+  })
