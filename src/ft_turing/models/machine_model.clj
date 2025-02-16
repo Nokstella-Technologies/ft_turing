@@ -47,4 +47,4 @@
    :initial  s/Str
    :finals  (NonEmptySet [s/Str])
    :transitions  (NonEmptySet StateTransitionsSchema)}
-  valid-machine? "machine is bad write"))
+  valid-machine? "machine is bad write, valid one of this conditions: blank alphabet, initial state in state, finals is a subset of state"))
