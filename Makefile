@@ -29,7 +29,10 @@ endif
 
 # Regra para executar o programa
 run:
+	@echo "try with this : resources/inception_machine.json \"@[1+=.]%[abcds]|a&a{[+b>1][1a>1]}b{[1b>1][=c>=]}c{[.d<.]}d{[1s>.][=d<.]}*111+11=\""
 	lein run -m ft-turing.core -h
+
+
 
 # Regras auxiliares
 clean:
